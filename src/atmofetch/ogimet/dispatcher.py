@@ -28,11 +28,15 @@ def meteo_ogimet(
     if interval == "daily":
         if not precip_split:
             import warnings
+
             warnings.warn("precip_split argument is only valid for hourly time step", stacklevel=2)
         return ogimet_daily(date_range=date_range, coords=coords, station=station)
     elif interval == "hourly":
         return ogimet_hourly(
-            date_range=date_range, coords=coords, station=station, precip_split_flag=precip_split,
+            date_range=date_range,
+            coords=coords,
+            station=station,
+            precip_split_flag=precip_split,
         )
     else:
         raise ValueError(f"interval must be 'hourly' or 'daily', got '{interval}'")

@@ -13,10 +13,40 @@ logger = logging.getLogger(__name__)
 _BASE_URL = "https://www.ncei.noaa.gov/pub/data/noaa/"
 
 _COL_WIDTHS = [
-    4, 6, 5, 4, 2, 2, 2, 2, 1, 6,
-    7, 5, 5, 5, 4, 3, 1, 1, 4, 1,
-    5, 1, 1, 1, 6, 1, 1, 1, 5, 1,
-    5, 1, 5, 1,
+    4,
+    6,
+    5,
+    4,
+    2,
+    2,
+    2,
+    2,
+    1,
+    6,
+    7,
+    5,
+    5,
+    5,
+    4,
+    3,
+    1,
+    1,
+    4,
+    1,
+    5,
+    1,
+    1,
+    1,
+    6,
+    1,
+    1,
+    1,
+    5,
+    1,
+    5,
+    1,
+    5,
+    1,
 ]
 
 
@@ -62,10 +92,19 @@ def meteo_noaa_hourly(
 
         df = df.iloc[:, [3, 4, 5, 6, 9, 10, 12, 15, 18, 24, 28, 30, 32]]
         df.columns = [
-            "year", "month", "day", "hour",
-            "lat", "lon", "alt",
-            "wd", "ws", "visibility",
-            "t2m", "dpt2m", "slp",
+            "year",
+            "month",
+            "day",
+            "hour",
+            "lat",
+            "lon",
+            "alt",
+            "wd",
+            "ws",
+            "visibility",
+            "t2m",
+            "dpt2m",
+            "slp",
         ]
 
         df["date"] = pd.to_datetime(
@@ -73,7 +112,14 @@ def meteo_noaa_hourly(
             utc=True,
         )
 
-        na_map = {"t2m": 9999, "dpt2m": 9999, "ws": 9999, "wd": 999, "slp": 99999, "visibility": 999999}
+        na_map = {
+            "t2m": 9999,
+            "dpt2m": 9999,
+            "ws": 9999,
+            "wd": 999,
+            "slp": 99999,
+            "visibility": 999999,
+        }
         for col, sentinel in na_map.items():
             df[col] = df[col].replace(sentinel, pd.NA)
 
@@ -91,7 +137,21 @@ def meteo_noaa_hourly(
 
     result = pd.concat(frames, ignore_index=True)
     result = result[
-        ["date", "year", "month", "day", "hour", "lon", "lat", "alt",
-         "t2m", "dpt2m", "ws", "wd", "slp", "visibility"]
+        [
+            "date",
+            "year",
+            "month",
+            "day",
+            "hour",
+            "lon",
+            "lat",
+            "alt",
+            "t2m",
+            "dpt2m",
+            "ws",
+            "wd",
+            "slp",
+            "visibility",
+        ]
     ]
     return result.sort_values("date").reset_index(drop=True)

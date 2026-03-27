@@ -163,9 +163,19 @@ def ogimet_daily(
 
     # convert numeric columns
     num_cols = [
-        "TemperatureCMax", "TemperatureCMin", "TemperatureCAvg", "TdAvgC",
-        "HrAvg", "WindkmhInt", "WindkmhGust", "PresslevHp", "Precmm",
-        "TotClOct", "lowClOct", "VisKm", "station_ID",
+        "TemperatureCMax",
+        "TemperatureCMin",
+        "TemperatureCAvg",
+        "TdAvgC",
+        "HrAvg",
+        "WindkmhInt",
+        "WindkmhGust",
+        "PresslevHp",
+        "Precmm",
+        "TotClOct",
+        "lowClOct",
+        "VisKm",
+        "station_ID",
     ]
     for col in num_cols:
         if col in result.columns:

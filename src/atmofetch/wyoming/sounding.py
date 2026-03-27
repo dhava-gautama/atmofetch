@@ -10,7 +10,19 @@ from atmofetch._utils.network import fetch_text
 
 logger = logging.getLogger(__name__)
 
-_SOUNDING_COLS = ["PRES", "HGHT", "TEMP", "DWPT", "RELH", "MIXR", "DRCT", "SKNT", "THTA", "THTE", "THTV"]
+_SOUNDING_COLS = [
+    "PRES",
+    "HGHT",
+    "TEMP",
+    "DWPT",
+    "RELH",
+    "MIXR",
+    "DRCT",
+    "SKNT",
+    "THTA",
+    "THTE",
+    "THTV",
+]
 
 
 def sounding_wyoming(
@@ -68,7 +80,7 @@ def sounding_wyoming(
         )
 
     # extract profile data between first <PRE> and second </PRE>
-    section1 = text[pre_indices[0]:pre_indices[1]]
+    section1 = text[pre_indices[0] : pre_indices[1]]
     lines = section1.split("\n")
 
     # skip header lines (typically: <PRE>, blank, header, dashes, units)
@@ -111,10 +123,9 @@ def sounding_wyoming(
 
     # extract metadata
     if not bufr and len(pre_indices) >= 4:
-        meta_section = text[pre_indices[2]:pre_indices[3]]
+        meta_section = text[pre_indices[2] : pre_indices[3]]
         meta_lines = [
-            l.strip() for l in meta_section.split("\n")
-            if l.strip() and "<" not in l
+            line.strip() for line in meta_section.split("\n") if line.strip() and "<" not in line
         ]
         meta_records: list[dict[str, str]] = []
         for ml in meta_lines:
@@ -124,8 +135,10 @@ def sounding_wyoming(
         metadata = pd.DataFrame(meta_records)
     elif bufr:
         # minimal metadata for BUFR
-        obs_lines = [l for l in text.split("\n") if "Observations" in l or "Station" in l]
-        metadata = pd.DataFrame({"bufr_metadata": [re.sub(r"<.*?>", "", l).strip() for l in obs_lines[:2]]})
+        obs_lines = [ln for ln in text.split("\n") if "Observations" in ln or "Station" in ln]
+        metadata = pd.DataFrame(
+            {"bufr_metadata": [re.sub(r"<.*?>", "", ln).strip() for ln in obs_lines[:2]]}
+        )
     else:
         metadata = pd.DataFrame()
 

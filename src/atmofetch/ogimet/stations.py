@@ -5,7 +5,6 @@ import re
 from datetime import date
 
 import pandas as pd
-from bs4 import BeautifulSoup
 
 from atmofetch._utils.network import fetch_ogimet
 
@@ -94,9 +93,8 @@ def nearest_stations_ogimet(
 
     # compute distances (euclidean approximation scaled to km)
     result["distance"] = (
-        ((result["lon"] - point[0]) ** 2 + (result["lat"] - point[1]) ** 2) ** 0.5
-        * 112.196672
-    )
+        (result["lon"] - point[0]) ** 2 + (result["lat"] - point[1]) ** 2
+    ) ** 0.5 * 112.196672
     result = result.sort_values("distance").head(no_of_stations).reset_index(drop=True)
     return result
 
@@ -128,20 +126,22 @@ def _parse_station_list(html: str, country: str) -> pd.DataFrame:
         lon = _parse_dms_coord(lon_raw, snippet, "lon")
 
         # extract WMO ID — usually a 5-digit number near the coordinates
-        wmo_match = re.search(r"\b(\d{5})\b", snippet[snippet.find(str(alt)):])
+        wmo_match = re.search(r"\b(\d{5})\b", snippet[snippet.find(str(alt)) :])
         wmo_id = wmo_match.group(1) if wmo_match else ""
 
         # extract station name (after " - ")
         name_match = re.search(r" - ([^'\"<]+)", snippet)
         station_name = name_match.group(1).strip() if name_match else ""
 
-        records.append({
-            "wmo_id": wmo_id,
-            "station_names": station_name,
-            "lon": lon,
-            "lat": lat,
-            "alt": alt,
-        })
+        records.append(
+            {
+                "wmo_id": wmo_id,
+                "station_names": station_name,
+                "lon": lon,
+                "lat": lat,
+                "alt": alt,
+            }
+        )
 
     return pd.DataFrame(records)
 
@@ -165,7 +165,11 @@ def _parse_dms_coord(raw: str, context: str, coord_type: str) -> float:
         if "S" in context[: context.find("Lon") if "Lon" in context else 100]:
             value *= -1
     else:
-        if "W" in context[context.find("Lon"):context.find("Lon") + 50] if "Lon" in context else False:
+        if (
+            "W" in context[context.find("Lon") : context.find("Lon") + 50]
+            if "Lon" in context
+            else False
+        ):
             value *= -1
 
     return value

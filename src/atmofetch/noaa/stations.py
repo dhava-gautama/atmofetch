@@ -76,9 +76,7 @@ def nearest_stations_noaa(
 
     mask = (result["Begin_date"].notna()) & (result["End_date"].notna())
     result = result[mask]
-    result = result[
-        (result["Begin_date"] <= date_query) & (result["End_date"] >= date_query)
-    ]
+    result = result[(result["Begin_date"] <= date_query) & (result["End_date"] >= date_query)]
     if result.empty:
         raise ValueError(f"No stations with data on {date_query} for country '{country}'.")
 
@@ -91,8 +89,7 @@ def nearest_stations_noaa(
     # euclidean approximation scaled to ~km
     result = result.copy()
     result["distance"] = (
-        ((result["LON"] - point[0]) ** 2 + (result["LAT"] - point[1]) ** 2) ** 0.5
-        * 112.196672
-    )
+        (result["LON"] - point[0]) ** 2 + (result["LAT"] - point[1]) ** 2
+    ) ** 0.5 * 112.196672
     result = result.sort_values("distance").head(no_of_stations).reset_index(drop=True)
     return result

@@ -173,8 +173,22 @@ def ogimet_hourly(
         result = result.drop(columns=["hour"], errors="ignore")
 
     # convert numeric columns where possible
-    numeric_cols = ["TC", "TdC", "ffkmh", "Gustkmh", "P0hPa", "PseahPa", "PTnd",
-                    "Nt", "Nh", "HKm", "InsoD1", "Viskm", "Snowcm", "station_ID"]
+    numeric_cols = [
+        "TC",
+        "TdC",
+        "ffkmh",
+        "Gustkmh",
+        "P0hPa",
+        "PseahPa",
+        "PTnd",
+        "Nt",
+        "Nh",
+        "HKm",
+        "InsoD1",
+        "Viskm",
+        "Snowcm",
+        "station_ID",
+    ]
     for col in numeric_cols:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors="coerce")

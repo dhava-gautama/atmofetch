@@ -22,9 +22,6 @@ def spheroid_dist(p1: tuple[float, float], p2: tuple[float, float]) -> float:
     num = (math.cos(lat2) * math.sin(diff_long)) ** 2 + (
         math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(diff_long)
     ) ** 2
-    denom = (
-        math.sin(lat1) * math.sin(lat2)
-        + math.cos(lat1) * math.cos(lat2) * math.cos(diff_long)
-    )
+    denom = math.sin(lat1) * math.sin(lat2) + math.cos(lat1) * math.cos(lat2) * math.cos(diff_long)
     d = math.atan2(math.sqrt(num), denom)
     return d * r / 1000
