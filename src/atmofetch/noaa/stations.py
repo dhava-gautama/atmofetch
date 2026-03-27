@@ -56,7 +56,7 @@ def nearest_stations_noaa(
     merged = stations_df.merge(countries_df, on="CTRY")
 
     def _parse_date(val: object) -> date | None:
-        s = str(int(val)) if pd.notna(val) else ""
+        s = str(int(val)) if pd.notna(val) else ""  # type: ignore[call-overload]
         if len(s) < 8:
             return None
         try:

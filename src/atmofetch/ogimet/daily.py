@@ -6,7 +6,7 @@ import time
 from datetime import date, timedelta
 
 import pandas as pd
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from tqdm import tqdm
 
 from atmofetch._utils.coordinates import get_coord_from_string
@@ -203,8 +203,8 @@ def ogimet_daily(
 
 
 def _build_column_names_from_rows(
-    header_row_el: object,
-    sub_row_el: object,
+    header_row_el: Tag,
+    sub_row_el: Tag,
 ) -> list[str] | None:
     """Build flat column names from a two-row HTML header using colspan."""
     cells1 = header_row_el.find_all(["th", "td"])
@@ -214,7 +214,8 @@ def _build_column_names_from_rows(
     expanded: list[tuple[str, int]] = []
     for c in cells1:
         text = re.sub(r"[^A-Za-z0-9]", "", c.get_text(strip=True))
-        span = int(c.get("colspan", 1))
+        colspan = c.get("colspan")
+        span = int(str(colspan)) if colspan else 1
         expanded.append((text, span))
 
     sub_texts = [re.sub(r"[^A-Za-z0-9]", "", c.get_text(strip=True)) for c in cells2]
